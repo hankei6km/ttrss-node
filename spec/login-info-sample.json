@@ -1,0 +1,6 @@
+{
+  "url": "http(s)://server/tt-rss (without '/api/' suffix)",
+  "user": "user name",
+  "password": "super-secret-password",
+  "ca": "cacert file name (optional)"
+}
