@@ -6,11 +6,13 @@ var TTRClient = require('../index.js');
 
 describe("TTRClient", function() {
 
-  it("Login to ttrrs api server and Logout from ttrss api server", function() {
+  it("Login to ttrrs api server , Check Logged in and Logout", function() {
     var client;
     var login_err;
+    var logged_in_err;
     var logout_err;
     var session_id;
+    var status;
     var flag;
 
     runs(function() {
@@ -25,15 +27,21 @@ describe("TTRClient", function() {
       );
 
       login_err = null;
+      logged_in_err = null;
       logout_err = null;
       session_id = null;
+      status = null;
 
       client.login(function(in_login_err, in_session_id){
         login_err = in_login_err;
         session_id = in_session_id;
-        client.logout(function(in_logout_err){
-          logout_err = in_logout_err;
-          flag = true;
+        client.logged_in(function(in_logged_in_err, in_status){
+          logged_in_err = in_logged_in_err
+          status = in_status;
+          client.logout(function(in_logout_err){
+            logout_err = in_logout_err;
+            flag = true;
+          });
         });
       });
     });
@@ -46,6 +54,8 @@ describe("TTRClient", function() {
       expect(login_err).toBeNull();
       expect(typeof(session_id)).toEqual('string');
       expect(session_id).not.toEqual('');
+      expect(status).toBeTruthy();
+      expect(logged_in_err).toBeNull();
       expect(logout_err).toBeNull();
     });
 
@@ -115,6 +125,43 @@ describe("TTRClient", function() {
 
     runs(function() {
       expect(err.toString()).toBe('Error: NOT_LOGGED_IN');
+    });
+
+  });
+
+
+  it("isLoggedIn was failed", function() {
+    var client;
+    var err;
+    var status;
+    var flag;
+
+    runs(function() {
+      flag = false;
+      var client = new TTRClient(
+        login_info.url,
+        {
+          user: login_info.user,
+          password: '',
+          ca: login_info.ca ? fs.readFileSync(login_info.ca) : null
+        }
+      );
+      err = null;
+      status = null;
+      client.logged_in(function(in_err, in_status){
+        status = in_status;
+        err = in_err;
+        flag = true;
+      });
+    });
+
+    waitsFor(function() {
+      return flag;
+    }, "Logged out was failed", 5000);
+
+    runs(function() {
+      expect(err).toBeNull();
+      expect(status).not.toBeTruthy();
     });
 
   });

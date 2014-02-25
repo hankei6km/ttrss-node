@@ -78,6 +78,28 @@ TTRClient.prototype.logout = function(caller_cb){
 };
 
 /**
+ * Is logged in.
+ * @param {function} caller_cb
+ */
+TTRClient.prototype.logged_in = function(caller_cb){
+  var opts = {
+    op: 'isLoggedIn'
+  };
+
+  var that = this;
+  this._call_api(
+    opts,
+    function(err, data){
+      if(!err){
+        caller_cb(null, data.content.status);
+      }else{
+        caller_cb(err);
+      }
+    }
+  ); 
+};
+
+/**
  * Utility to call ttrss api.
  * @private
  * @param {object} in_post_data Parameters for ttrss api(it's not JSON).
