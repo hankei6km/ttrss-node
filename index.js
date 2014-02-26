@@ -11,6 +11,9 @@ var util = require("util");
 var _ = require('underscore');
 var request = require('request');
 
+var parse_api_args = require('./libs/api-args.js').parse;
+var Category = require('./libs/category.js');
+
 /**
  * @constructor
  * @alias module:TTRClient
@@ -139,5 +142,90 @@ TTRClient.prototype._call_api = function(in_post_data, caller_cb){
     }
   })
 };
+
+/**
+ * Get a list of all available categories.
+ * @param in_opts {object} Parameters for ttrss api(it's not JSON)(optional).
+ * @param in_opts.unread_only {boolean} Only return categories containing unread articles.
+ *    Defaults to false.
+ * @param in_opts.enable_nested {boolean} When enabled, traverse through sub-categories
+ *    and return only the **topmost** categories in a flat list.
+ *    Defaults to false.
+ * @param in_opts.include_empty {boolean} Include categories not containing any feeds.
+ *    Defaults to false. *Requires server version 1.7.6*
+ * @param in_caller_cb {function}
+ */
+TTRClient.prototype.get_categories = function(in_opts, in_caller_cb){
+  var opts = {
+    op: 'getCategories',
+    unread_only: false,
+    enable_nested: false,
+    include_empty: false
+  };
+  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+
+  var that = this;
+  this._call_api(
+    opts,
+    function(err, data){
+      if(!err){
+        var len = data.content.length;
+        var cats = new Array(len);
+        for(var idx=0; idx<len; idx++){
+          cats[idx] = new Category(data.content[idx], that);
+        }
+        caller_cb(err, cats);
+      }else{
+        caller_cb(err, null);
+      }
+    }
+  );
+}
+
+/**
+ * Get a list of feeds in a category.
+ * @param in_opts {object} Parameters for ttrss api(it's not JSON)(optional).
+ * @param in_opts.cat_id {number} Category id. This is available as the ``id`` property
+ *     of a Category object.
+ * @param in_opts.cunread_only {boolean} *Optional* Include only feeds containing unread
+ *     articles. Default is false.
+ * @param in_opts.climit {number} *Optional* Limit number of included feeds to ``limit``.
+ *     Default is 0 (unlimited).
+ * @param in_opts.coffset {number} *Optional* Skip this number of feeds. Useful for
+ *     pagination. Default is 0.
+ * @param in_opts.cinclude_nested {boolean} *Optional* Include child categories. Default
+ *     is false.
+ * @param in_caller_cb {function}
+ */
+TTRClient.prototype.get_feeds = function(in_opts, in_caller_cb){
+  var opts = {
+    cat_id: -1,
+    unread_only: false,
+    limit: 0,
+    offset: 0,
+    include_nested: false
+  };
+                                                                 
+  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+  opts.op = 'getFeeds';
+
+  var that = this;
+  this._call_api(
+    opts,
+    function(err, data){
+      if(!err){
+        var len = data.content.length;
+        var feeds = new Array(len);
+        for(var idx=0; idx<len; idx++){
+          //feeds[idx] = new Feed(data.content[idx], that);
+          feeds[idx] = data.content[idx];
+        }
+        caller_cb(err, feeds);
+      }else{
+        caller_cb(err, null);
+      }
+    }
+  );
+}
 
 module.exports = TTRClient;
