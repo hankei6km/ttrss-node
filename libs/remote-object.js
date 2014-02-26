@@ -1,4 +1,4 @@
-/** 
+/**
  * This is the base class for representing remote resources as Js objects.
  * @module remote-object
  * @author hankei6km
@@ -9,7 +9,7 @@
 
 /**
  * @constructor
- * @alias module:RemoteObject
+ * @alias module:remote-object
  * @param {object} attr Remote resource.
  * @param {object} client Instance of TTRClient.
  */
