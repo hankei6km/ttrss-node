@@ -14,6 +14,7 @@ var request = require('request');
 var parse_api_args = require('./libs/api-args.js').parse;
 var Category = require('./libs/category.js');
 var Feed = require('./libs/feed.js');
+var Headline = require('./libs/headline.js');
 
 /**
  * @constructor
@@ -276,8 +277,7 @@ TTRClient.prototype.get_headlines = function(in_opts, in_caller_cb){
         var len = data.content.length;
         var headlines = new Array(len);
         for(var idx=0; idx<len; idx++){
-          //headlines[idx] = new Headline(data.content[idx], that);
-          headlines[idx] = data.content[idx];
+          headlines[idx] = new Headline(data.content[idx], that);
         }
         caller_cb(err, headlines);
       }else{
@@ -286,6 +286,43 @@ TTRClient.prototype.get_headlines = function(in_opts, in_caller_cb){
     }
   );
 };
+
+/**
+ * Get a list of articles from article ids.
+ * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
+ * @param {string} in_opts.article_id A comma separated string or list of article ids to
+ *     fetch,
+ */
+TTRClient.prototype.get_articles = function(in_opts, in_caller_cb){
+  var opts = {
+    article_id: null
+  };
+
+  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+  opts.op = 'getArticle';
+  if(util.isArray(opts.article_id)){
+    opts.article_id = opts.article_id.join(',');
+  }
+
+  var that = this;
+  this._call_api(
+    opts,
+    function(err, data){
+      if(!err){
+        var len = data.content.length;
+        var articles = new Array(len);
+        for(var idx=0; idx<len; idx++){
+          //articles[idx] = new Article(data.content[idx], that);
+          articles[idx] = data.content[idx];
+        }
+        caller_cb(err, articles);
+      }else{
+        caller_cb(err, null);
+      }
+    }
+  );
+};
+
 
 /**
  * Attempt to mark all articles in specified feed as read.

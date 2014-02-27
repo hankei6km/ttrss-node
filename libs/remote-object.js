@@ -39,7 +39,26 @@ function def_attr_getter(proto, name){
   "id",
   "title",
   "unread",
-  "cat_id"
+
+  "cat_id",
+
+  "marked",
+  "published",
+  "updated",
+  "is_updated",
+  "link",
+  "feed_id",
+  "tags",
+  "excerpt",
+  "labels",
+  "feed_title",
+  "comments_count",
+  "comments_link",
+  "always_display_attachments",
+  "author",
+  "score",
+  "note",
+  "lang"
 ].forEach(function(item){
   def_attr_getter(RemoteObject.prototype, item);
 });
