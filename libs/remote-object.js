@@ -21,20 +21,27 @@ function RemoteObject(attr, client){
   }
 }
 
-Object.defineProperty(RemoteObject.prototype, "id", {
-  get: function() {
-    return this._attr.id;
-  }
-});
-Object.defineProperty(RemoteObject.prototype, "title", {
-  get: function() {
-    return this._attr.title;
-  }
-});
-Object.defineProperty(RemoteObject.prototype, "unread", {
-  get: function() {
-    return this._attr.unread;
-  }
+/**
+ * Define shortcut to _attr.
+ * @param {prototype} proto
+ * @param {string} name
+ */
+function def_attr_getter(proto, name){
+  Object.defineProperty(proto, name, {
+    get: function() {
+      return this._attr[name];
+    }
+  });
+}
+
+// Define shortcut to _attr for RemoteObject.
+[
+  "id",
+  "title",
+  "unread",
+  "cat_id"
+].forEach(function(item){
+  def_attr_getter(RemoteObject.prototype, item);
 });
 
 module.exports = RemoteObject;

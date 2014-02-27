@@ -13,6 +13,7 @@ var request = require('request');
 
 var parse_api_args = require('./libs/api-args.js').parse;
 var Category = require('./libs/category.js');
+var Feed = require('./libs/feed.js');
 
 /**
  * @constructor
@@ -217,8 +218,7 @@ TTRClient.prototype.get_feeds = function(in_opts, in_caller_cb){
         var len = data.content.length;
         var feeds = new Array(len);
         for(var idx=0; idx<len; idx++){
-          //feeds[idx] = new Feed(data.content[idx], that);
-          feeds[idx] = data.content[idx];
+          feeds[idx] = new Feed(data.content[idx], that);
         }
         caller_cb(err, feeds);
       }else{
@@ -227,5 +227,96 @@ TTRClient.prototype.get_feeds = function(in_opts, in_caller_cb){
     }
   );
 }
+
+/**
+ * Get a list of headlines from a specified feed.
+ * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
+ * @param {number} in_opts.feed_id  Feed id. This is available as the ``id`` property of
+ *     a Feed object. Default is ``-4`` (all feeds).
+ * @param {number} in_opts.limit Return no more than this number of headlines. Default is
+ *     ``0`` (unlimited, though the server limits to 60).
+ * @param {number} in_opts.skip Skip this number of headlines. Useful for pagination.
+ *     Default is ``0``.
+ * @param {boolean} in_opts.is_cat The feed_id is a category. Defaults to ``False``.
+ * @param {boolean} in_opts.show_excerpt Include a short excerpt of the article. Defaults
+ *     to ``True``.
+ * @param {number} in_opts.show_content Include full article content. Defaults to
+ *     ``False``.
+ * @param {string} in_opts.view_mode (string = all_articles, unread, adaptive, marked,
+ *     updated)
+ * @param {boolean} in_opts.include_attachments include article attachments. Defaults to
+ *     ``False``.
+ * @param {number} in_opts.since_id Only include headlines newer than ``since_id``.
+ * @param {true} in_opts.include_nested Include articles from child categories.
+ *     Defaults to ``True``.
+ * @param {function} in_caller_cb
+ */
+TTRClient.prototype.get_headlines = function(in_opts, in_caller_cb){
+  var opts = {
+    feed_id: -4,
+    limit: 0,
+    skip: 0,
+    is_cat: false,
+    show_excerpt: true,
+    show_content: false,
+    // view_mode: undefined,
+    include_attachments: false,
+    // since_id: undefined,
+    include_nested: true
+  };
+                                                                 
+  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+  opts.op = 'getHeadlines';
+
+  var that = this;
+  this._call_api(
+    opts,
+    function(err, data){
+      if(!err){
+        var len = data.content.length;
+        var headlines = new Array(len);
+        for(var idx=0; idx<len; idx++){
+          //headlines[idx] = new Headline(data.content[idx], that);
+          headlines[idx] = data.content[idx];
+        }
+        caller_cb(err, headlines);
+      }else{
+        caller_cb(err, null);
+      }
+    }
+  );
+};
+
+/**
+ * Attempt to mark all articles in specified feed as read.
+ * (this method is not implemented)
+ * @todo Implement this method.
+ * @param {number} feed_id id of the feed to catchup.
+ * @param {boolean} is_cat Specified feed is a category. Default is False.
+ * @param {function} in_caller_cb
+ */
+TTRClient.prototype.catchup_feed = function(in_opts, in_caller_cb){
+  // TODO: Implement this method.
+  throw new Error('must be implemented');  
+
+  var opts = {
+    //feed_id: feed_id,
+    is_cat: false
+  };
+  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+  opts.op = 'catchupFeed';
+
+  var that = this;
+  this._call_api(
+    opts,
+    function(err, data){
+      if(!err){
+        caller_cb(err, data.content);
+      }else{
+        caller_cb(err, null);
+      }
+    }
+  );
+};
 
 module.exports = TTRClient;
