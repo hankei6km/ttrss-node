@@ -15,6 +15,7 @@ var parse_api_args = require('./libs/api-args.js').parse;
 var Category = require('./libs/category.js');
 var Feed = require('./libs/feed.js');
 var Headline = require('./libs/headline.js');
+var Article = require('./libs/article.js');
 
 /**
  * @constructor
@@ -312,10 +313,119 @@ TTRClient.prototype.get_articles = function(in_opts, in_caller_cb){
         var len = data.content.length;
         var articles = new Array(len);
         for(var idx=0; idx<len; idx++){
-          //articles[idx] = new Article(data.content[idx], that);
-          articles[idx] = data.content[idx];
+          articles[idx] = new Article(data.content[idx], that);
         }
         caller_cb(err, articles);
+      }else{
+        caller_cb(err, null);
+      }
+    }
+  );
+};
+
+
+/**
+ * Update all properties of an article object with fresh information from
+ * the server.
+ * 
+ * Please note that this method alters the original object and does not
+ * return a new one.
+ * (this method is not implemented)
+ * @todo Implement this method.
+ * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
+ * @param {Article} in_opts.content Article.
+ * @param {function} in_caller_cb
+ */
+TTRClient.prototype.refresh_article = function(in_opts, in_caller_cb){
+  // TODO: Implement this method.
+  throw new Error('must be implemented');  
+
+  var opts = {};
+
+  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+  opts.op = 'getArticle';
+  opts.article_id = opts.article.id;
+
+  var that = this;
+  this._call_api(
+    opts,
+    function(err, data){
+      if(!err){
+        caller_cb(err, data.content[0]);
+      }else{
+        caller_cb(err, null);
+      }
+    }
+  );
+};
+
+/**
+ * Share an article to the *published* feed.
+ * (this method is not implemented)
+ * @todo Implement this method.
+ * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
+ * @param {string} in_ops.title Article title.
+ * @param {string} in_ops.url Article url.
+ * @param {string} in_ops.content Article content.
+ * @param {function} in_caller_cb
+ */
+TTRClient.prototype.share_to_published = function(in_opts, in_caller_cb){
+  // TODO: Implement this method.
+  throw new Error('must be implemented');  
+
+  var opts = {
+    //'title': title,
+    //'url': url,
+    //'content': content
+  };
+
+  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+  opts.op = 'shareToPublished';
+
+  var that = this;
+  this._call_api(
+    opts,
+    function(err, data){
+      if(!err){
+        caller_cb(err, data.content);
+      }else{
+        caller_cb(err, null);
+      }
+    }
+  );
+};
+
+/**
+ * Toggle the unread status of an article.
+ * (this method is not implemented)
+ * @todo Implement this method.
+ * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
+ * @param {string} in_opts.article_id: List or comma separated string of IDs of articles
+ *    to toggle unread.
+ * @param {function} in_caller_cb
+ */
+TTRClient.prototype.toggle_unread = function(in_opts, in_caller_cb){
+  // TODO: Implement this method.
+  throw new Error('must be implemented');  
+
+  var opts = {
+    article_ids: null,
+    mode: 2,
+    field: 2
+  };
+
+  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+  opts.op = 'updateArticle';
+  if(util.isArray(opts.article_id)){
+    opts.article_id = opts.article_id.join(',');
+  }
+
+  var that = this;
+  this._call_api(
+    opts,
+    function(err, data){
+      if(!err){
+        caller_cb(err, data.content);
       }else{
         caller_cb(err, null);
       }
