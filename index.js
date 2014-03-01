@@ -173,11 +173,7 @@ TTRClient.prototype.get_categories = function(in_opts, in_caller_cb){
     opts,
     function(err, data){
       if(!err){
-        var len = data.content.length;
-        var cats = new Array(len);
-        for(var idx=0; idx<len; idx++){
-          cats[idx] = new Category(data.content[idx], that);
-        }
+        var cats = remote_object_from_content(Category, data.content, that);
         caller_cb(err, cats);
       }else{
         caller_cb(err, null);
@@ -218,11 +214,7 @@ TTRClient.prototype.get_feeds = function(in_opts, in_caller_cb){
     opts,
     function(err, data){
       if(!err){
-        var len = data.content.length;
-        var feeds = new Array(len);
-        for(var idx=0; idx<len; idx++){
-          feeds[idx] = new Feed(data.content[idx], that);
-        }
+        var feeds = remote_object_from_content(Feed, data.content, that);
         caller_cb(err, feeds);
       }else{
         caller_cb(err, null);
@@ -247,11 +239,7 @@ TTRClient.prototype.get_labels = function(in_opts, in_caller_cb){
     opts,
     function(err, data){
       if(!err){
-        var len = data.content.length;
-        var labels = new Array(len);
-        for(var idx=0; idx<len; idx++){
-          labels[idx] = new Label(data.content[idx], that);
-        }
+        var labels = remote_object_from_content(Label, data.content, that);
         caller_cb(err, labels);
       }else{
         caller_cb(err, null);
@@ -326,11 +314,7 @@ TTRClient.prototype.get_headlines = function(in_opts, in_caller_cb){
     opts,
     function(err, data){
       if(!err){
-        var len = data.content.length;
-        var headlines = new Array(len);
-        for(var idx=0; idx<len; idx++){
-          headlines[idx] = new Headline(data.content[idx], that);
-        }
+        var headlines = remote_object_from_content(Headline, data.content, that);
         caller_cb(err, headlines);
       }else{
         caller_cb(err, null);
@@ -361,11 +345,7 @@ TTRClient.prototype.get_articles = function(in_opts, in_caller_cb){
     opts,
     function(err, data){
       if(!err){
-        var len = data.content.length;
-        var articles = new Array(len);
-        for(var idx=0; idx<len; idx++){
-          articles[idx] = new Article(data.content[idx], that);
-        }
+        var articles = remote_object_from_content(Article, data.content, that);
         caller_cb(err, articles);
       }else{
         caller_cb(err, null);
@@ -516,5 +496,24 @@ TTRClient.prototype.catchup_feed = function(in_opts, in_caller_cb){
     }
   );
 };
+
+
+/**
+ * Create to instance of `RemoteObject` from recieved content.
+ * @private
+ * @param {object} remote_class Class based `RemoteObject`(i.e. `Feed`).
+ * @param {array} content Recieved content array.
+ * @param {object} client Instanced TTRClient object.
+ */
+function remote_object_from_content(remote_class, content, client){
+  var len = content.length;
+  var ret = new Array(len);
+
+  for(var idx=0; idx<len; idx++){
+    ret[idx] = new remote_class(content[idx], client);
+  }
+
+  return ret;
+}
 
 module.exports = TTRClient;
