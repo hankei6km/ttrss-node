@@ -19,6 +19,12 @@ function RemoteObject(attr, client){
   for(var k in attr){
     this._attr[k] = attr[k];
   }
+  if(typeof(this._attr.id) === 'string'){
+    this._attr.id = parseInt(this._attr.id);
+  }
+  if(typeof(this._attr.unread) === 'string'){
+    this._attr.unread = parseInt(this._attr.unread);
+  }
 }
 
 /**
