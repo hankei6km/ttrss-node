@@ -21,6 +21,9 @@ var RemoteObject = require('./remote-object.js');
  */
 function Headline(){
   RemoteObject.apply(this, arguments);
+  if('updated' in this._attr){
+    this._attr.updated = new Date(this._attr.updated * 1000);
+  }
 }
 util.inherits(Headline, RemoteObject);
 

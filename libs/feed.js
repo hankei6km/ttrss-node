@@ -21,6 +21,9 @@ var RemoteObject = require('./remote-object.js');
  */
 function Feed(){
   RemoteObject.apply(this, arguments);
+  if('last_updated' in this._attr){
+    this._attr.last_updated = new Date(this._attr.last_updated * 1000);
+  }
 }
 util.inherits(Feed, RemoteObject);
 
