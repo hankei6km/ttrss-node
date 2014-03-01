@@ -14,6 +14,7 @@ var request = require('request');
 var parse_api_args = require('./libs/api-args.js').parse;
 var Category = require('./libs/category.js');
 var Feed = require('./libs/feed.js');
+var Label = require('./libs/label.js');
 var Headline = require('./libs/headline.js');
 var Article = require('./libs/article.js');
 
@@ -229,6 +230,56 @@ TTRClient.prototype.get_feeds = function(in_opts, in_caller_cb){
     }
   );
 }
+
+/**
+ * Get a list of configured labels.
+ * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
+ * @param {function} in_caller_cb
+ */
+TTRClient.prototype.get_labels = function(in_opts, in_caller_cb){
+  var opts = {};
+                                                                 
+  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+  opts.op = 'getLabels';
+
+  var that = this;
+  this._call_api(
+    opts,
+    function(err, data){
+      if(!err){
+        var len = data.content.length;
+        var labels = new Array(len);
+        for(var idx=0; idx<len; idx++){
+          labels[idx] = new Label(data.content[idx], that);
+        }
+        caller_cb(err, labels);
+      }else{
+        caller_cb(err, null);
+      }
+    }
+  );
+}
+
+/**
+ * Get headlines for specified label id. Supports the same in_opts
+ *             as ``get_headlines``, except for ``feed_id`` of course.
+ * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
+ * @param {function} in_caller_cb
+ */
+TTRClient.prototype.get_headlines_for_label = function(in_opts, in_caller_cb){
+  var opts = {};
+                                                                 
+  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+  if('label_id' in opts){
+    // opts.feed_id = -11 - parseInt(opts.label_id);
+    opts.feed_id = parseInt(opts.label_id);
+    delete opts.label_id;
+  }else{
+    opts.feed_id = -11;
+  }
+
+  this.get_headlines(opts, caller_cb);
+};
 
 /**
  * Get a list of headlines from a specified feed.

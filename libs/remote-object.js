@@ -58,7 +58,12 @@ function def_attr_getter(proto, name){
   "author",
   "score",
   "note",
-  "lang"
+  "lang",
+
+  "caption",
+  "fg_color",
+  "bg_color",
+  "checked"
 ].forEach(function(item){
   def_attr_getter(RemoteObject.prototype, item);
 });
