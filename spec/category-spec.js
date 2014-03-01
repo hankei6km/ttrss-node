@@ -54,14 +54,20 @@ describe("TTRClient Category", function() {
   it("Instance of Categories[0]", function() {
     expect(cats[0] instanceof Category).toBeTruthy();
   });
-  it("Special category's id", function() {
-    expect(cats[0].id).toEqual(-1);
-  });
-  it("Special category's title", function() {
-    expect(cats[0].title).toEqual('Special');
-  });
-  it("Type of Special category's unread", function() {
-    expect(typeof(cats[0].unread)).toEqual('number');
+  it("Special category", function() {
+    var contain = false;
+    var id = null;
+    var unread = null;
+    cats.forEach(function(cat){
+      if(cat.title == 'Special'){
+        contain = true;
+        id = cat.id;
+        unread = cat.unread
+      }
+    });
+    expect(contain).toBeTruthy();
+    expect(id).toEqual(-1);
+    expect(typeof(unread)).toEqual('number');
   });
 
   describe("Get feeds(only get, do not check item received)", function() {
