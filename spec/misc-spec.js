@@ -65,4 +65,30 @@ describe("TTRClient Misc", function() {
     });
   });
 
+  describe("Get total number of subscribed feeds.", function() {
+    var count;
+    var err;
+    var flag;
+    runs(function(){
+      count = null;
+      err = null;
+      flag = false;
+      client.get_feed_count(function(in_err, in_count){
+        count = in_count;
+        err = in_err;
+        flag = true;
+      });
+    });
+    waitsFor(function() {
+      return flag;
+    }, "Number of subscribed feeds should be received", 10000);
+
+    it("Err", function() {
+      expect(err).toBeNull();
+    });
+    it("Count type.", function() {
+      expect(typeof(count)).toEqual('number');
+    });
+  });
+
 });

@@ -173,6 +173,36 @@ TTRClient.prototype.get_unread_count = function(in_opts, in_caller_cb){
 };
 
 /**
+ * Get total number of subscribed feeds.
+ * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
+ * @param {function} in_caller_cb
+ */
+TTRClient.prototype.get_feed_count = function(in_opts, in_caller_cb){
+  var opts = {};
+  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+  opts.op = 'getCounters';
+
+  var that = this;
+  this._call_api(
+    opts,
+    function(err, data){
+      if(!err){
+        var count = null;
+        var len = data.content.length;
+        for(var idx=0; idx<len; idx++){
+          if(data.content[idx].id == 'subscribed-feeds'){
+            count = data.content[idx].counter;
+          }
+        }
+        caller_cb(null, count);
+      }else{
+        caller_cb(err, null);
+      }
+    }
+  );
+};
+
+/**
  * Get a list of all available categories.
  * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
  * @param {boolean} in_opts.unread_only Only return categories containing unread articles.
