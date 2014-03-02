@@ -56,6 +56,7 @@ function def_attr_getter(proto, name){
   "feed_id",
   "tags",
   "excerpt",
+  "content",
   "labels",
   "feed_title",
   "comments_count",
@@ -65,6 +66,9 @@ function def_attr_getter(proto, name){
   "score",
   "note",
   "lang",
+
+  "has_icon",
+  "order_id",
 
   "caption",
   "fg_color",
