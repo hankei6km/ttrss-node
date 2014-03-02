@@ -148,6 +148,31 @@ TTRClient.prototype._call_api = function(in_post_data, caller_cb){
 };
 
 /**
+ * Get total number of unread articles.
+ * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
+ * @param {function} in_caller_cb
+ */
+TTRClient.prototype.get_unread_count = function(in_opts, in_caller_cb){
+  var opts = {};
+  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+  opts.op = 'getUnread';
+
+  var that = this;
+  this._call_api(
+    opts,
+    function(err, data){
+      if(!err){
+        caller_cb(err, 
+                  data.content.unread ? 
+                    parseInt(data.content.unread) : data.content.unread);
+      }else{
+        caller_cb(err, null);
+      }
+    }
+  );
+};
+
+/**
  * Get a list of all available categories.
  * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
  * @param {boolean} in_opts.unread_only Only return categories containing unread articles.
