@@ -242,13 +242,13 @@ TTRClient.prototype.get_categories = function(in_opts, in_caller_cb){
  * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
  * @param {number} in_opts.cat_id Category id. This is available as the ``id`` property
  *     of a Category object.
- * @param {boolean} in_opts.cunread_only *Optional* Include only feeds containing unread
+ * @param {boolean} in_opts.unread_only *Optional* Include only feeds containing unread
  *     articles. Default is false.
- * @param {number} in_opts.climit *Optional* Limit number of included feeds to ``limit``.
+ * @param {number} in_opts.limit *Optional* Limit number of included feeds to ``limit``.
  *     Default is 0 (unlimited).
- * @param {number} in_opts.coffset *Optional* Skip this number of feeds. Useful for
+ * @param {number} in_opts.offset *Optional* Skip this number of feeds. Useful for
  *     pagination. Default is 0.
- * @param {boolean} in_opts.cinclude_nested *Optional* Include child categories. Default
+ * @param {boolean} in_opts.include_nested *Optional* Include child categories. Default
  *     is false.
  * @param {function} in_caller_cb
  */
