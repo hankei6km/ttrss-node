@@ -2,9 +2,9 @@
 
 var fs = require('fs');
 var login_info = require('./login-info.json');
-var TTRClient = require('../index.js');
+var ttrss_node = require('../index.js');
 
-describe("TTRClient", function() {
+describe("Login", function() {
 
   it("Login to ttrrs api server , Check Logged in and Logout", function() {
     var client;
@@ -17,7 +17,7 @@ describe("TTRClient", function() {
 
     runs(function() {
       flag = false;
-      var client = new TTRClient(
+      var client = new ttrss_node(
         login_info.url,
         {
           user: login_info.user,
@@ -69,7 +69,7 @@ describe("TTRClient", function() {
 
     runs(function() {
       flag = false;
-      var client = new TTRClient(
+      var client = new ttrss_node(
         login_info.url,
         {
           user: login_info.user,
@@ -104,7 +104,7 @@ describe("TTRClient", function() {
 
     runs(function() {
       flag = false;
-      var client = new TTRClient(
+      var client = new ttrss_node(
         login_info.url,
         {
           user: login_info.user,
@@ -138,7 +138,7 @@ describe("TTRClient", function() {
 
     runs(function() {
       flag = false;
-      var client = new TTRClient(
+      var client = new ttrss_node(
         login_info.url,
         {
           user: login_info.user,

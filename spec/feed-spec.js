@@ -3,10 +3,10 @@
 var fs = require('fs');
 var util = require('util');
 var login_info = require('./login-info.json');
-var TTRClient = require('../index.js');
+var ttrss_node = require('../index.js');
 var Feed = require('../libs/feed.js');
 
-var client = new TTRClient(
+var client = new ttrss_node(
   login_info.url,
   {
     user: login_info.user,
@@ -15,7 +15,7 @@ var client = new TTRClient(
   }
 );
 
-describe("TTRClient Feed", function() {
+describe("Feed", function() {
 
   var feeds = null;
   var err = null;
