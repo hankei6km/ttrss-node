@@ -144,7 +144,7 @@ TTRClient.prototype._call_api = function(in_post_data, caller_cb){
         caller_cb(err, null);
       }
     }
-  })
+  });
 };
 
 /**
@@ -235,7 +235,7 @@ TTRClient.prototype.get_categories = function(in_opts, in_caller_cb){
       }
     }
   );
-}
+};
 
 /**
  * Get a list of feeds in a category.
@@ -276,7 +276,7 @@ TTRClient.prototype.get_feeds = function(in_opts, in_caller_cb){
       }
     }
   );
-}
+};
 
 /**
  * Get a list of configured labels.
@@ -301,7 +301,7 @@ TTRClient.prototype.get_labels = function(in_opts, in_caller_cb){
       }
     }
   );
-}
+};
 
 /**
  * Get headlines for specified label id. Supports the same in_opts
@@ -426,23 +426,23 @@ TTRClient.prototype.refresh_article = function(in_opts, in_caller_cb){
   // TODO: Implement this method.
   throw new Error('must be implemented');  
 
-  var opts = {};
+  // var opts = {};
 
-  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
-  opts.op = 'getArticle';
-  opts.article_id = opts.article.id;
+  // var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+  // opts.op = 'getArticle';
+  // opts.article_id = opts.article.id;
 
-  var that = this;
-  this._call_api(
-    opts,
-    function(err, data){
-      if(!err){
-        caller_cb(err, data.content[0]);
-      }else{
-        caller_cb(err, null);
-      }
-    }
-  );
+  // var that = this;
+  // this._call_api(
+  //   opts,
+  //   function(err, data){
+  //     if(!err){
+  //       caller_cb(err, data.content[0]);
+  //     }else{
+  //       caller_cb(err, null);
+  //     }
+  //   }
+  // );
 };
 
 /**
@@ -459,26 +459,26 @@ TTRClient.prototype.share_to_published = function(in_opts, in_caller_cb){
   // TODO: Implement this method.
   throw new Error('must be implemented');  
 
-  var opts = {
-    //'title': title,
-    //'url': url,
-    //'content': content
-  };
+  // var opts = {
+  //   //'title': title,
+  //   //'url': url,
+  //   //'content': content
+  // };
 
-  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
-  opts.op = 'shareToPublished';
+  // var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+  // opts.op = 'shareToPublished';
 
-  var that = this;
-  this._call_api(
-    opts,
-    function(err, data){
-      if(!err){
-        caller_cb(err, data.content);
-      }else{
-        caller_cb(err, null);
-      }
-    }
-  );
+  // var that = this;
+  // this._call_api(
+  //   opts,
+  //   function(err, data){
+  //     if(!err){
+  //       caller_cb(err, data.content);
+  //     }else{
+  //       caller_cb(err, null);
+  //     }
+  //   }
+  // );
 };
 
 /**
@@ -494,29 +494,29 @@ TTRClient.prototype.toggle_unread = function(in_opts, in_caller_cb){
   // TODO: Implement this method.
   throw new Error('must be implemented');  
 
-  var opts = {
-    article_ids: null,
-    mode: 2,
-    field: 2
-  };
+  // var opts = {
+  //   article_ids: null,
+  //   mode: 2,
+  //   field: 2
+  // };
 
-  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
-  opts.op = 'updateArticle';
-  if(util.isArray(opts.article_id)){
-    opts.article_id = opts.article_id.join(',');
-  }
+  // var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+  // opts.op = 'updateArticle';
+  // if(util.isArray(opts.article_id)){
+  //   opts.article_id = opts.article_id.join(',');
+  // }
 
-  var that = this;
-  this._call_api(
-    opts,
-    function(err, data){
-      if(!err){
-        caller_cb(err, data.content);
-      }else{
-        caller_cb(err, null);
-      }
-    }
-  );
+  // var that = this;
+  // this._call_api(
+  //   opts,
+  //   function(err, data){
+  //     if(!err){
+  //       caller_cb(err, data.content);
+  //     }else{
+  //       caller_cb(err, null);
+  //     }
+  //   }
+  // );
 };
 
 
@@ -532,40 +532,40 @@ TTRClient.prototype.catchup_feed = function(in_opts, in_caller_cb){
   // TODO: Implement this method.
   throw new Error('must be implemented');  
 
-  var opts = {
-    //feed_id: feed_id,
-    is_cat: false
-  };
-  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
-  opts.op = 'catchupFeed';
+  // var opts = {
+  //   //feed_id: feed_id,
+  //   is_cat: false
+  // };
+  // var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+  // opts.op = 'catchupFeed';
 
-  var that = this;
-  this._call_api(
-    opts,
-    function(err, data){
-      if(!err){
-        caller_cb(err, data.content);
-      }else{
-        caller_cb(err, null);
-      }
-    }
-  );
+  // var that = this;
+  // this._call_api(
+  //   opts,
+  //   function(err, data){
+  //     if(!err){
+  //       caller_cb(err, data.content);
+  //     }else{
+  //       caller_cb(err, null);
+  //     }
+  //   }
+  // );
 };
 
 
 /**
  * Create to instance of `RemoteObject` from recieved content.
  * @private
- * @param {object} remote_class Class based `RemoteObject`(i.e. `Feed`).
+ * @param {object} RemoteClass Class based `RemoteObject`(i.e. `Feed`).
  * @param {array} content Recieved content array.
  * @param {object} client Instanced TTRClient object.
  */
-function remote_object_from_content(remote_class, content, client){
+function remote_object_from_content(RemoteClass, content, client){
   var len = content.length;
   var ret = new Array(len);
 
   for(var idx=0; idx<len; idx++){
-    ret[idx] = new remote_class(content[idx], client);
+    ret[idx] = new RemoteClass(content[idx], client);
   }
 
   return ret;

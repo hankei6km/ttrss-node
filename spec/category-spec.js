@@ -62,7 +62,7 @@ describe("TTRClient Category", function() {
       if(cat.title == 'Special'){
         contain = true;
         id = cat.id;
-        unread = cat.unread
+        unread = cat.unread;
       }
     });
     expect(contain).toBeTruthy();

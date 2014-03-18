@@ -36,7 +36,7 @@ describe("TTRClient", function() {
         login_err = in_login_err;
         session_id = in_session_id;
         client.logged_in(function(in_logged_in_err, in_status){
-          logged_in_err = in_logged_in_err
+          logged_in_err = in_logged_in_err;
           status = in_status;
           client.logout(function(in_logout_err){
             logout_err = in_logout_err;
