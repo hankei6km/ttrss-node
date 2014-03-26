@@ -58,6 +58,7 @@ module.exports = function(in_url, in_opts){
   return {
     /**
      * Log in.
+     * @return {object} Handle object for 'request'.
      * @param {function} caller_cb
      */
     login: function(caller_cb){
@@ -68,7 +69,7 @@ module.exports = function(in_url, in_opts){
       };
 
       var that = this;
-      this._call_api(
+      return this._call_api(
         opts,
         function(err, data){
           if(!err){
@@ -83,6 +84,7 @@ module.exports = function(in_url, in_opts){
 
     /**
      * Log out.
+     * @return {object} Handle object for 'request'.
      * @param {function} caller_cb
      */
     logout: function(caller_cb){
@@ -91,7 +93,7 @@ module.exports = function(in_url, in_opts){
       };
 
       var that = this;
-      this._call_api(
+      return this._call_api(
         opts,
         function(err, data){
           if(!err){
@@ -129,6 +131,7 @@ module.exports = function(in_url, in_opts){
     /**
      * Utility to call ttrss api.
      * @private
+     * @return {object} Handle object for 'request'.
      * @param {object} in_post_data Parameters for ttrss api(it's not JSON).
      * @param {function} caller_cb
      */
@@ -150,25 +153,38 @@ module.exports = function(in_url, in_opts){
         body: JSON.stringify(post_data)
       };
 
-      request.post(opts, function (err, resp, data) {
-        if (!err && resp.statusCode == 200) {
-          if(!('error' in data.content)){
-            caller_cb(null, data);
+      var aborted = false;
+
+      var req = request.post(opts, function (err, resp, data) {
+        if(!aborted){
+          if (!err && resp.statusCode == 200) {
+            if(!('error' in data.content)){
+              caller_cb(null, data);
+            }else{
+              caller_cb(new Error(data.content.error, null));
+            }
           }else{
-            caller_cb(new Error(data.content.error, null));
-          }
-        }else{
-          if(!err){
-            caller_cb(new Error('status code = ' + resp.statusCode), null);
-          }else{
-            caller_cb(err, null);
+            if(!err){
+              caller_cb(new Error('status code = ' + resp.statusCode), null);
+            }else{
+              caller_cb(err, null);
+            }
           }
         }
       });
+
+      return {
+        abort: function(){
+          aborted = true;
+          req.abort();
+          caller_cb(new Error('abort'), null);
+        }
+      };
     },
 
     /**
      * Get total number of unread articles.
+     * @return {object} Handle object for 'request'.
      * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
      * @param {function} in_caller_cb
      */
@@ -178,7 +194,7 @@ module.exports = function(in_url, in_opts){
       opts.op = 'getUnread';
 
       var that = this;
-      this._call_api(
+      return this._call_api(
         opts,
         function(err, data){
           if(!err){
@@ -194,6 +210,7 @@ module.exports = function(in_url, in_opts){
 
     /**
      * Get total number of subscribed feeds.
+     * @return {object} Handle object for 'request'.
      * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
      * @param {function} in_caller_cb
      */
@@ -203,7 +220,7 @@ module.exports = function(in_url, in_opts){
       opts.op = 'getCounters';
 
       var that = this;
-      this._call_api(
+      return this._call_api(
         opts,
         function(err, data){
           if(!err){
@@ -224,6 +241,7 @@ module.exports = function(in_url, in_opts){
 
     /**
      * Get a list of all available categories.
+     * @return {object} Handle object for 'request'.
      * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
      * @param {boolean} in_opts.unread_only Only return categories containing unread articles.
      *    Defaults to false.
@@ -244,7 +262,7 @@ module.exports = function(in_url, in_opts){
       var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
 
       var that = this;
-      this._call_api(
+      return this._call_api(
         opts,
         function(err, data){
           if(!err){
@@ -259,6 +277,7 @@ module.exports = function(in_url, in_opts){
 
     /**
      * Get a list of feeds in a category.
+     * @return {object} Handle object for 'request'.
      * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
      * @param {number} in_opts.cat_id Category id. This is available as the ``id`` property
      *     of a Category object.
@@ -285,7 +304,7 @@ module.exports = function(in_url, in_opts){
       opts.op = 'getFeeds';
 
       var that = this;
-      this._call_api(
+      return this._call_api(
         opts,
         function(err, data){
           if(!err){
@@ -300,6 +319,7 @@ module.exports = function(in_url, in_opts){
 
     /**
      * Get a list of configured labels.
+     * @return {object} Handle object for 'request'.
      * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
      * @param {function} in_caller_cb
      */
@@ -310,7 +330,7 @@ module.exports = function(in_url, in_opts){
       opts.op = 'getLabels';
 
       var that = this;
-      this._call_api(
+      return this._call_api(
         opts,
         function(err, data){
           if(!err){
@@ -326,6 +346,7 @@ module.exports = function(in_url, in_opts){
     /**
      * Get headlines for specified label id. Supports the same in_opts
      *             as ``get_headlines``, except for ``feed_id`` of course.
+     * @return {object} Handle object for 'request'.
      * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
      * @param {function} in_caller_cb
      */
@@ -341,11 +362,12 @@ module.exports = function(in_url, in_opts){
         opts.feed_id = -11;
       }
 
-      this.get_headlines(opts, caller_cb);
+      return this.get_headlines(opts, caller_cb);
     },
 
     /**
      * Get a list of headlines from a specified feed.
+     * @return {object} Handle object for 'request'.
      * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
      * @param {number} in_opts.feed_id  Feed id. This is available as the ``id`` property of
      *     a Feed object. Default is ``-4`` (all feeds).
@@ -385,7 +407,7 @@ module.exports = function(in_url, in_opts){
       opts.op = 'getHeadlines';
 
       var that = this;
-      this._call_api(
+      return this._call_api(
         opts,
         function(err, data){
           if(!err){
@@ -400,6 +422,7 @@ module.exports = function(in_url, in_opts){
 
     /**
      * Get a list of articles from article ids.
+     * @return {object} Handle object for 'request'.
      * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
      * @param {string} in_opts.article_id A comma separated string or list of article ids to
      *     fetch,
@@ -416,7 +439,7 @@ module.exports = function(in_url, in_opts){
       }
 
       var that = this;
-      this._call_api(
+      return this._call_api(
         opts,
         function(err, data){
           if(!err){
@@ -438,6 +461,7 @@ module.exports = function(in_url, in_opts){
      * return a new one.
      * (this method is not implemented)
      * @todo Implement this method.
+     * @return {object} Handle object for 'request'.
      * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
      * @param {Article} in_opts.content Article.
      * @param {function} in_caller_cb
@@ -453,7 +477,7 @@ module.exports = function(in_url, in_opts){
       // opts.article_id = opts.article.id;
 
       // var that = this;
-      // this._call_api(
+      // return this._call_api(
       //   opts,
       //   function(err, data){
       //     if(!err){
@@ -469,6 +493,7 @@ module.exports = function(in_url, in_opts){
      * Share an article to the *published* feed.
      * (this method is not implemented)
      * @todo Implement this method.
+     * @return {object} Handle object for 'request'.
      * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
      * @param {string} in_ops.title Article title.
      * @param {string} in_ops.url Article url.
@@ -489,7 +514,7 @@ module.exports = function(in_url, in_opts){
       // opts.op = 'shareToPublished';
 
       // var that = this;
-      // this._call_api(
+      // return this._call_api(
       //   opts,
       //   function(err, data){
       //     if(!err){
@@ -505,6 +530,7 @@ module.exports = function(in_url, in_opts){
      * Toggle the unread status of an article.
      * (this method is not implemented)
      * @todo Implement this method.
+     * @return {object} Handle object for 'request'.
      * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
      * @param {string} in_opts.article_id: List or comma separated string of IDs of articles
      *    to toggle unread.
@@ -527,7 +553,7 @@ module.exports = function(in_url, in_opts){
       // }
 
       // var that = this;
-      // this._call_api(
+      // return this._call_api(
       //   opts,
       //   function(err, data){
       //     if(!err){
@@ -544,6 +570,7 @@ module.exports = function(in_url, in_opts){
      * Attempt to mark all articles in specified feed as read.
      * (this method is not implemented)
      * @todo Implement this method.
+     * @return {object} Handle object for 'request'.
      * @param {number} feed_id id of the feed to catchup.
      * @param {boolean} is_cat Specified feed is a category. Default is False.
      * @param {function} in_caller_cb
@@ -560,7 +587,7 @@ module.exports = function(in_url, in_opts){
       // opts.op = 'catchupFeed';
 
       // var that = this;
-      // this._call_api(
+      // return this._call_api(
       //   opts,
       //   function(err, data){
       //     if(!err){

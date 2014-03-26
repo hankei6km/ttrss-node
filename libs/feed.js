@@ -39,6 +39,7 @@ Feed.prototype.catchup = function(in_caller_cb){
 
 /**
  * Get a list of headlines from a this feed.
+ * @return {object} Handle object for 'request'.
  * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
  * @param {number} in_opts.limit Return no more than this number of headlines. Default is
  *     ``0`` (unlimited, though the server limits to 60).
@@ -63,7 +64,7 @@ Feed.prototype.headlines = function(in_opts, in_caller_cb){
   var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
   opts.feed_id = this.id;
 
-  this._client.get_headlines.apply(this._client, [opts, caller_cb]);
+  return this._client.get_headlines.apply(this._client, [opts, caller_cb]);
 };
 
 module.exports = Feed;

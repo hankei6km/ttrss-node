@@ -29,6 +29,7 @@ util.inherits(Headline, RemoteObject);
 
 /**
  * Get the full article corresponding to this headline
+ * @return {object} Handle object for 'request'.
  * @param {function} in_caller_cb
  */
 Headline.prototype.full_article = function(in_opts, in_caller_cb){
@@ -37,7 +38,7 @@ Headline.prototype.full_article = function(in_opts, in_caller_cb){
   var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
   opts.id = this.id;
 
-  this._client.get_headlines.apply(this._client, [opts, function(err, articles){
+  return this._client.get_headlines.apply(this._client, [opts, function(err, articles){
     if(!err){
       caller_cb(err, articles[0]);
     }else{

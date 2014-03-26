@@ -26,6 +26,7 @@ util.inherits(Category, RemoteObject);
 
 /**
  * Get a list of feeds for this category.
+ * @return {object} Handle object for 'request'.
  * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
  * @param {boolean} in_opts.cunread_only *Optional* Include only feeds containing unread
  *     articles. Default is false.
@@ -43,7 +44,7 @@ Category.prototype.feeds = function(in_opts, in_caller_cb){
   var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
   opts.cat_id = this.id;
 
-  this._client.get_feeds.apply(this._client, [opts, caller_cb]);
+  return this._client.get_feeds.apply(this._client, [opts, caller_cb]);
 };
 
 module.exports = Category;
