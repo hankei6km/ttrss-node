@@ -161,7 +161,7 @@ module.exports = function(in_url, in_opts){
             if(!('error' in data.content)){
               caller_cb(null, data);
             }else{
-              caller_cb(new Error(data.content.error, null));
+              caller_cb(new Error(data.content.error), null);
             }
           }else{
             if(!err){
