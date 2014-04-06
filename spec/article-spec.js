@@ -64,4 +64,46 @@ describe("Article", function() {
     expect(articles[0].title).not.toEqual('');
   });
 
+  describe("Toggle unread", function() {
+    var content;
+    var unread;
+    var err;
+    var flag;
+    runs(function(){
+      content = null;
+      unread = null;
+      err = null;
+      flag = false;
+      articles[0].toggle_unread(function(in_err, in_content){
+        content = in_content;
+        err = in_err;
+        if(!err){
+          client.get_articles({article_id:articles[0].id}, function(in_err, in_articles){
+            unread = in_articles.unread;
+            err = in_err;
+            flag = true;
+          });
+        }else{
+          flag = true;
+        }
+      });
+    });
+    waitsFor(function() {
+      return flag;
+    }, "Content should be received", 10000);
+
+    it("Err", function() {
+      expect(err).toBeNull();
+    });
+    it("Content.updated", function() {
+      expect(content.updated).toEqual(1);
+    });
+    it("Toggled unread", function() {
+      if(articles[0].unread){
+        expect(unread).not.toBeTruthy();
+      }else{
+        expect(unread).toBeTruthy();
+      }
+    });
+  });
 });

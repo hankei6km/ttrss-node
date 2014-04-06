@@ -600,41 +600,38 @@ module.exports = function(in_url, in_opts){
 
     /**
      * Toggle the unread status of an article.
-     * (this method is not implemented)
-     * @todo Implement this method.
      * @return {object} Handle object for 'request'.
      * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
-     * @param {string} in_opts.article_id: List or comma separated string of IDs of articles
+     * @param {array} in_opts.article_id: Array or comma separated string of IDs of articles
      *    to toggle unread.
      * @param {function} in_caller_cb
      */
     toggle_unread: function(in_opts, in_caller_cb){
-      // TODO: Implement this method.
-      throw new Error('must be implemented');  
+      var opts = {
+        article_ids: null,
+        mode: 2,
+        field: 2
+      };
 
-      // var opts = {
-      //   article_ids: null,
-      //   mode: 2,
-      //   field: 2
-      // };
+      var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+      opts.op = 'updateArticle';
+      opts.article_ids = opts.article_id;
+      delete opts.article_id;
+      if(util.isArray(opts.article_ids)){
+        opts.article_ids = opts.article_ids.join(',');
+      }
 
-      // var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
-      // opts.op = 'updateArticle';
-      // if(util.isArray(opts.article_id)){
-      //   opts.article_id = opts.article_id.join(',');
-      // }
-
-      // var that = this;
-      // return this._call_api(
-      //   opts,
-      //   function(err, data){
-      //     if(!err){
-      //       caller_cb(err, data.content);
-      //     }else{
-      //       caller_cb(err, null);
-      //     }
-      //   }
-      // );
+      var that = this;
+      return this._call_api(
+        opts,
+        function(err, data){
+          if(!err){
+            caller_cb(err, data.content);
+          }else{
+            caller_cb(err, null);
+          }
+        }
+      );
     },
 
 

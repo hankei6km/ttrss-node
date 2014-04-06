@@ -49,12 +49,23 @@ Article.prototype.refresh_status = function(in_opts, in_caller_cb){
 
 /**
  * Toggle unread status of this article.
- * @todo Implement this method.
+ * @return {object} Handle object for 'request'.
+ * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
  * @param {function} in_caller_cb
  */
 Article.prototype.toggle_unread = function(in_opts, in_caller_cb){
-  // TODO: Implement this method.
-  throw new Error('must be implemented');  
+  var opts ={};
+
+  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+  opts.article_id = this.id;
+
+  return this._client.toggle_unread.apply(this._client, [opts, function(err, content){
+    if(!err){
+      caller_cb(err, content);
+    }else{
+      caller_cb(err, null);
+    }
+  }]);
 };
 
 module.exports = Article;
