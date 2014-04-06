@@ -527,6 +527,78 @@ module.exports = function(in_url, in_opts){
     },
 
     /**
+     * Mark an article as unread.
+     * @return {object} Handle object for 'request'.
+     * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
+     * @param {array} in_ops.article_id: Array or comma separated string of IDs of articles
+     *     to mark as unread.
+     * @param {function} in_caller_cb
+     */
+    mark_unread: function(in_opts, in_caller_cb){
+      var opts = {
+        article_ids: null,
+        mode: 1,
+        field: 2
+      };
+
+      var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+      opts.op = 'updateArticle';
+      opts.article_ids = opts.article_id;
+      delete opts.article_id;
+      if(util.isArray(opts.article_ids)){
+        opts.article_ids = opts.article_ids.join(',');
+      }
+
+      var that = this;
+      return this._call_api(
+        opts,
+        function(err, data){
+          if(!err){
+            caller_cb(err, data.content);
+          }else{
+            caller_cb(err, null);
+          }
+        }
+      );
+    },
+
+    /**
+     * Mark an article as read.
+     * @return {object} Handle object for 'request'.
+     * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
+     * @param {array} in_opts.article_id: List or comma separated string of IDs of articles
+     *     to mark as read.
+     * @param {function} in_caller_cb
+     */
+    mark_read: function(in_opts, in_caller_cb){
+      var opts = {
+        article_ids: null,
+        mode: 0,
+        field: 2
+      };
+
+      var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+      opts.op = 'updateArticle';
+      opts.article_ids = opts.article_id;
+      delete opts.article_id;
+      if(util.isArray(opts.article_ids)){
+        opts.article_ids = opts.article_ids.join(',');
+      }
+
+      var that = this;
+      return this._call_api(
+        opts,
+        function(err, data){
+          if(!err){
+            caller_cb(err, data.content);
+          }else{
+            caller_cb(err, null);
+          }
+        }
+      );
+    },
+
+    /**
      * Toggle the unread status of an article.
      * (this method is not implemented)
      * @todo Implement this method.
