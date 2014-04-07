@@ -81,4 +81,46 @@ describe("Feed", function() {
     });
   });
 
+  describe("Catchup feed", function() {
+    var content;
+    var article;
+    var err;
+    var flag;
+    runs(function(){
+      err = null;
+      flag = false;
+      var feed = null;
+      for(var idx=0; idx<feeds.length; idx++){
+        if(feeds[idx].id == -4){
+          feed = feeds[idx];
+          break;
+        }
+      }
+      feed.headlines(function(in_err, headlines){
+        client.mark_unread({article_id: headlines[0].id}, function(in_err, in_content){
+          feed.catchup(function(in_err, in_content){
+            if(!in_err){
+              content = in_content;
+              headlines[0].full_article(function(in_err, in_article){
+                article = in_article;
+                err = in_err;
+                flag = true;
+              });
+            }else{
+              err = in_err;
+              flag = true;
+            }
+          });
+        });
+      });
+    });
+    waitsFor(function() {
+      return flag;
+    }, "Headlines should be received", 10000);
+
+    it("Err of Feed.headlines", function() {
+      expect(err).toBeNull();
+    });
+  });
+
 });

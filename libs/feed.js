@@ -29,12 +29,24 @@ util.inherits(Feed, RemoteObject);
 
 /**
  * Mark this feed as read(this method is not implemented).
- * @todo Implement this method.
+ * @return {object} Handle object for 'request'.
+ * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
  * @param {function} in_caller_cb
  */
-Feed.prototype.catchup = function(in_caller_cb){
-  // TODO: Implement this method.
-  throw new Error('must be implemented');  
+Feed.prototype.catchup = function(in_opts, in_caller_cb){
+  var opts = {};
+
+  var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+  opts.article_id = this.id;
+  opts.is_cat = false;
+
+  return this._client.catchup_feed.apply(this._client, [opts, function(err, content){
+    if(!err){
+      caller_cb(err, content);
+    }else{
+      caller_cb(err, null);
+    }
+  }]);
 };
 
 /**

@@ -637,35 +637,31 @@ module.exports = function(in_url, in_opts){
 
     /**
      * Attempt to mark all articles in specified feed as read.
-     * (this method is not implemented)
-     * @todo Implement this method.
      * @return {object} Handle object for 'request'.
-     * @param {number} feed_id id of the feed to catchup.
-     * @param {boolean} is_cat Specified feed is a category. Default is False.
+     * @param {object} in_opts Parameters for ttrss api(it's not JSON)(optional).
+     * @param {number} in_opts.feed_id id of the feed to catchup.
+     * @param {boolean} in_opts.is_cat Specified feed is a category. Default is False.
      * @param {function} in_caller_cb
      */
     catchup_feed: function(in_opts, in_caller_cb){
-      // TODO: Implement this method.
-      throw new Error('must be implemented');  
+      var opts = {
+        //feed_id: feed_id,
+        is_cat: false
+      };
+      var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
+      opts.op = 'catchupFeed';
 
-      // var opts = {
-      //   //feed_id: feed_id,
-      //   is_cat: false
-      // };
-      // var caller_cb = parse_api_args(opts, in_opts, in_caller_cb);
-      // opts.op = 'catchupFeed';
-
-      // var that = this;
-      // return this._call_api(
-      //   opts,
-      //   function(err, data){
-      //     if(!err){
-      //       caller_cb(err, data.content);
-      //     }else{
-      //       caller_cb(err, null);
-      //     }
-      //   }
-      // );
+      var that = this;
+      return this._call_api(
+        opts,
+        function(err, data){
+          if(!err){
+            caller_cb(err, data.content);
+          }else{
+            caller_cb(err, null);
+          }
+        }
+      );
     }
   };
 };
