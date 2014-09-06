@@ -79,7 +79,7 @@ describe("Article", function() {
         err = in_err;
         if(!err){
           client.get_articles({article_id:articles[0].id}, function(in_err, in_articles){
-            unread = in_articles.unread;
+            unread = in_articles[0].unread;
             err = in_err;
             flag = true;
           });
