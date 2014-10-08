@@ -1,19 +1,9 @@
 "use strict";
 
-var fs = require('fs');
-var util = require('util');
-var login_info = require('./login-info.json');
-var ttrss_node = require('../index.js');
-var Article = require('../libs/article.js');
+var client = require('./libs/gen_client.js')({auto_login: true});
 
-var client = new ttrss_node(
-  login_info.url,
-  {
-    user: login_info.user,
-    password: login_info.password,
-    ca: login_info.ca ? fs.readFileSync(login_info.ca) : null
-  }
-);
+var util = require('util');
+var Article = require('../libs/article.js');
 
 describe("Article", function() {
 
@@ -24,18 +14,12 @@ describe("Article", function() {
   beforeEach(function(){
     runs(function(){
       if(!flag){
-        client.login(function(err, in_session_id){
+        client.get_headlines(function(in_err, headlines){
           if(!err){
-            client.get_headlines(function(in_err, headlines){
-              if(!err){
-                client.get_articles({article_id:headlines[0].id}, function(in_err, in_articles){
-                  articles = in_articles;
-                  err = in_err;
-                  flag = true;
-                });
-              }else{
-                throw err;
-              }
+            client.get_articles({article_id:headlines[0].id}, function(in_err, in_articles){
+              articles = in_articles;
+              err = in_err;
+              flag = true;
             });
           }else{
             throw err;

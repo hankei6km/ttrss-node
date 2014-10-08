@@ -1,13 +1,8 @@
 "use strict";
 
-var fs = require('fs');
-var login_info = require('./login-info.json');
-var ttrss_node = require('../index.js');
-
 describe("Login", function() {
 
   it("Login to ttrrs api server , Check Logged in and Logout", function() {
-    var client;
     var login_err;
     var logged_in_err;
     var logout_err;
@@ -17,14 +12,7 @@ describe("Login", function() {
 
     runs(function() {
       flag = false;
-      var client = new ttrss_node(
-        login_info.url,
-        {
-          user: login_info.user,
-          password: login_info.password,
-          ca: login_info.ca ? fs.readFileSync(login_info.ca) : null
-        }
-      );
+      var client = require('./libs/gen_client.js')({auto_login: false});
 
       login_err = null;
       logged_in_err = null;
@@ -62,21 +50,17 @@ describe("Login", function() {
   });
 
   it("Login was failed", function() {
-    var client;
     var err;
     var session_id;
     var flag;
 
     runs(function() {
       flag = false;
-      var client = new ttrss_node(
-        login_info.url,
-        {
-          user: login_info.user,
-          password: '',
-          ca: login_info.ca ? fs.readFileSync(login_info.ca) : null
-        }
-      );
+      var client = require('./libs/gen_client.js')({
+        user: '',
+        auto_login: false
+      });
+
       err = null;
       session_id = null;
       client.login(function(in_err, in_session_id){
@@ -98,20 +82,13 @@ describe("Login", function() {
 
 
   it("Logout was failed", function() {
-    var client;
     var err;
     var flag;
 
     runs(function() {
       flag = false;
-      var client = new ttrss_node(
-        login_info.url,
-        {
-          user: login_info.user,
-          password: '',
-          ca: login_info.ca ? fs.readFileSync(login_info.ca) : null
-        }
-      );
+      var client = require('./libs/gen_client.js')({auto_login: false});
+
       err = null;
       client.logout(function(in_err){
         err = in_err;
@@ -131,21 +108,14 @@ describe("Login", function() {
 
 
   it("isLoggedIn was failed", function() {
-    var client;
     var err;
     var status;
     var flag;
 
     runs(function() {
       flag = false;
-      var client = new ttrss_node(
-        login_info.url,
-        {
-          user: login_info.user,
-          password: '',
-          ca: login_info.ca ? fs.readFileSync(login_info.ca) : null
-        }
-      );
+      var client = require('./libs/gen_client.js')({auto_login: false});
+
       err = null;
       status = null;
       client.logged_in(function(in_err, in_status){

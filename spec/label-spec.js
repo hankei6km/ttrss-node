@@ -3,20 +3,10 @@
  */
 "use strict";
 
-var fs = require('fs');
-var util = require('util');
-var login_info = require('./login-info.json');
-var ttrss_node = require('../index.js');
-var Label = require('../libs/label.js');
+var client = require('./libs/gen_client.js')({auto_login: true});
 
-var client = new ttrss_node(
-  login_info.url,
-  {
-    user: login_info.user,
-    password: login_info.password,
-    ca: login_info.ca ? fs.readFileSync(login_info.ca) : null
-  }
-);
+var util = require('util');
+var Label = require('../libs/label.js');
 
 describe("Label", function() {
 
@@ -27,16 +17,10 @@ describe("Label", function() {
   beforeEach(function(){
     runs(function(){
       if(!flag){
-        client.login(function(err, in_session_id){
-          if(!err){
-            client.get_labels(function(in_err, in_labels){
-              labels = in_labels;
-              err = in_err;
-              flag = true;
-            });
-          }else{
-            throw err;
-          }
+        client.get_labels(function(in_err, in_labels){
+          labels = in_labels;
+          err = in_err;
+          flag = true;
         });
       }
     });

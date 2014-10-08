@@ -129,13 +129,71 @@ module.exports = function(in_url, in_opts){
     },
 
     /**
-     * Utility to call ttrss api.
+     * Utility to call ttrss api and to manage sid.
      * @private
      * @return {object} Handle object for 'request'.
      * @param {object} in_post_data Parameters for ttrss api(it's not JSON).
      * @param {function} caller_cb
      */
     _call_api: function(in_post_data, caller_cb){
+      var that = this;
+      var func_handler = null;
+      var handler = {
+        abort: function(){
+          if(func_handler !== null){
+            func_handler.abort();
+          }
+        }
+      };
+
+      if(auto_login){
+        if(in_post_data.op == 'login' || in_post_data.op == 'isLoggedIn'){
+          func_handler = this._call_api_func(in_post_data, caller_cb);
+          return handler;
+        }else if(sid !== null){
+          func_handler = this._call_api_func(in_post_data, function(err, data){
+            if(err === null){
+              caller_cb(err, data);
+            }else{
+              if(err.message === 'NOT_LOGGED_IN'){
+                func_handler = that.login(function(err, data){
+                  if(err === null){
+                    func_handler = that._call_api_func(in_post_data, caller_cb);
+                  }else{
+                    caller_cb(err, data);
+                  }
+                });
+              }else{
+                caller_cb(err, data);
+              }
+            }
+          });
+          return handler;
+        }else{
+          func_handler = this.login(function(err, data){
+            if(err === null){
+              func_handler = that._call_api_func(in_post_data, caller_cb);
+            }else{
+              caller_cb(err, data);
+            }
+          });
+          return handler;
+        }
+      }else{
+        func_handler = this._call_api_func(in_post_data, caller_cb);
+        return handler;
+      }
+    },
+
+    /**
+     * Utility to call ttrss api.
+     * Only `_call_api` call this function.
+     * @private
+     * @return {object} Handle object for 'request'.
+     * @param {object} in_post_data Parameters for ttrss api(it's not JSON).
+     * @param {function} caller_cb
+     */
+    _call_api_func: function(in_post_data, caller_cb){
       var post_data = {};
 
       for(var p in in_post_data){
