@@ -5,7 +5,7 @@ var client = require('./libs/gen_client.js')({auto_login: true});
 var util = require('util');
 var Headline = require('../libs/headline.js');
 
-describe("Headline", function() {
+describe("Unread", function() {
 
   var headlines = null;
   var err = null;
