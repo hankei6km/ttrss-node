@@ -18,6 +18,8 @@ describe("Auto login", function() {
           user: login_info.user,
           password: login_info.password,
           ca: login_info.ca ? fs.readFileSync(login_info.ca) : null,
+          cert: login_info.cert ? fs.readFileSync(login_info.cert) : null,
+          key: login_info.key ? fs.readFileSync(login_info.key) : null,
           auto_login: true
         }
       );
@@ -51,9 +53,11 @@ describe("Auto login", function() {
       var client = new ttrss_node(
         login_info.url,
         {
-          user: login_info.user,
+          user: '',
           password: '',
           ca: login_info.ca ? fs.readFileSync(login_info.ca) : null,
+          cert: login_info.cert ? fs.readFileSync(login_info.cert) : null,
+          key: login_info.key ? fs.readFileSync(login_info.key) : null,
           auto_login: true
         }
       );

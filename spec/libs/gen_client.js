@@ -11,6 +11,8 @@ module.exports = function(in_opts){
       user: login_info.user,
       password: login_info.password,
       ca: login_info.ca ? fs.readFileSync(login_info.ca) : null,
+      cert: login_info.cert ? fs.readFileSync(login_info.cert) : null,
+      key: login_info.key ? fs.readFileSync(login_info.key) : null,
       auto_login: false
   }, in_opts || {});
 

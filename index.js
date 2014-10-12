@@ -43,7 +43,9 @@ function remote_object_from_content(RemoteClass, content, client){
  * @param {object} in_opts
  * @param {string} in_opts.user The username to use when logging in.
  * @param {string} in_opts.password The password for the user.
- * @param {string} in_opts.ca The cacert to use when https connect(optional).
+ * @param {string} in_opts.ca The ca cert to use when https connect(optional).
+ * @param {string} in_opts.cert The client cert to use when ssl auth(optional).
+ * @param {string} in_opts.key The client key to use when ssl auth(optional).
  */
 module.exports = function(in_url, in_opts){
   var url = (in_url.match(/\/$/) ? in_url : in_url + '/') + 'api/';
@@ -52,6 +54,8 @@ module.exports = function(in_url, in_opts){
   var auto_login =
     typeof(in_opts.auto_login) == 'boolean' ? in_opts.auto_login : false;
   var ca = in_opts.ca;
+  var cert = in_opts.cert;
+  var key = in_opts.key;
 
   var sid = null;
 
@@ -207,6 +211,8 @@ module.exports = function(in_url, in_opts){
       var opts = {
         url: url,
         ca: ca, 
+        cert: cert, 
+        key: key, 
         json: true,
         body: JSON.stringify(post_data)
       };
