@@ -63,4 +63,44 @@ describe("Misc", function() {
     });
   });
 
+  describe("Edit/Enum shortcut(received attr) of remote-obj.", function() {
+    var cats;
+    var flag;
+    runs(function(){
+      cats = null;
+      flag = false;
+      client.get_categories(function(in_err, in_cats){
+        cats = in_cats;
+        flag = true;
+      });
+    });
+    waitsFor(function() {
+      return flag;
+    }, "Categories should be received", 10000);
+
+    it("Edit.", function() {
+      var cat = cats[0];
+
+      cat.id = 'test';
+      expect(cat._attr.id).toEqual('test');
+
+      // delete cat.id;
+      // expect('id' in cat).not.toBeTruthy();
+      // expect('id' in cat._attr).not.toBeTruthy();
+    });
+
+    it("Enum.", function() {
+      var cat = cats[0];
+      var t = false;
+
+      for(var p in cat){
+        if(p === 'unread'){
+          t = true;
+        }
+      }
+
+      expect(t).toBeTruthy();
+    });
+  });
+
 });

@@ -34,8 +34,13 @@ function RemoteObject(attr, client){
  */
 function def_attr_getter(proto, name){
   Object.defineProperty(proto, name, {
+    configurable: true,
+    enumerable: true,
     get: function() {
       return this._attr[name];
+    },
+    set: function(v) {
+      this._attr[name] = v;
     }
   });
 }
