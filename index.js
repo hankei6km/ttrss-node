@@ -214,7 +214,7 @@ module.exports = function(in_url, in_opts){
         cert: cert, 
         key: key, 
         json: true,
-        body: JSON.stringify(post_data)
+        form: JSON.stringify(post_data)
       };
 
       var aborted = false;
