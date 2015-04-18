@@ -88,7 +88,7 @@ If there's a specific feature you'd like me to prioritize,
 feel free to submit an issue or a pull request.
 
 The source code is available at
-[https:// /ttrss-node](https://github.com/hankei6km/ttrss-node.git)
+[https://github.com/hankei6km/ttrss-node.git](https://github.com/hankei6km/ttrss-node.git)
 
 Can be generate API documentation by below procedure.
 
