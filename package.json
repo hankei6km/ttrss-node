@@ -4,7 +4,7 @@
   "description": "A libary for the Tiny Tiny RSS web API",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jasmine-node --verbose --captureExceptions spec/"
   },
   "dependencies": {
     "underscore": ">=1.6.0",
